@@ -1,0 +1,19 @@
+pipeline{
+agent any
+stages{
+stage('build docker image'){
+steps{
+sh "docker build -t jenkinstraining.azurecr.io/dockerhub-63619:$BUILD_NUMBER ."
+}
+}
+stage("push image to registry"){
+environment{
+DOCKER_CONFIG =credentials('jenkins-training-docker-config-json')
+}
+steps{
+sh "export DOCKER_CONFIG=\"\$(dirname \"\$DOCKER_CONFIG\")\";
+    docker push jenkinstraining.azurecr.io/dockerhub-63619:$BUILD_NUMBER"
+}
+}
+}
+}
